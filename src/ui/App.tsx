@@ -4,6 +4,7 @@ import Spinner from "ink-spinner";
 import {resolveBaseDir} from "../utils/config.js";
 import {CardStore} from "../store/CardStore.js";
 import MainMenu from "./MainMenu.js";
+import {StudyScreen} from "./StudyScreen.js";
 
 type Screen = "main-menu" | "study" | "browse" | "stats";
 
@@ -52,7 +53,7 @@ const App: React.FC = () => {
     case "main-menu":
       return <MainMenu store={store} onNavigate={setScreen} />;
     case "study":
-      return <Text>Study Screen (TODO)</Text>;
+      return <StudyScreen store={store} onExit={() => setScreen("main-menu")} />;
     case "browse":
       return <Text>Browse Decks Screen (TODO)</Text>;
     case "stats":

@@ -47,14 +47,14 @@
   - [x] Implement `ui/MainMenu.tsx` with counts and menu options
   - [x] Wire `src/index.ts` to parse CLI args and render `App`
 
-- [ ] Phase 6 – Ink UI: Study flow
-  - [ ] Implement `ui/StudyScreen.tsx` with `currentCard`, `showAnswer`, `dueCards`
-  - [ ] On mount, load due cards via `store.getDueCards(deckName)`
-  - [ ] Implement `loadNextCard()` to advance through due cards
-  - [ ] Implement `useInput` handling: SPACE, `1–5`, `q`
-  - [ ] Implement `handleRating(quality)` calling `calculateSM2` and `store.saveCard`
-  - [ ] Render question, conditional answer, and rating prompt
-  - [ ] Handle empty state when no due cards
+- [x] Phase 6 – Ink UI: Study flow
+  - [x] Implement `ui/StudyScreen.tsx` with `currentCard`, `showAnswer`, `dueCards`
+  - [x] On mount, load due cards via `store.getDueCards(deckName)`
+  - [x] Implement `loadNextCard()` to advance through due cards
+  - [x] Implement `useInput` handling: SPACE, `1–5`, `q`
+  - [x] Implement `handleRating(quality)` calling `calculateSM2` and `store.saveCard`
+  - [x] Render question, conditional answer, and rating prompt
+  - [x] Handle empty state when no due cards
 
 - [ ] Phase 7 – Ink UI: Browse + Stats
   - [ ] Implement `ui/BrowseDecks.tsx` listing decks with `ink-select-input`
