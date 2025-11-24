@@ -1,25 +1,25 @@
 # drill implementation plan
 
 - [x] Phase 0 – Repo + scaffolding
-  - [x] Init npm project, add deps (Ink v5, React, yaml, etc.)
+  - [x] Init npm project, add deps (TypeScript, Ink v5, React, yaml, etc.)
   - [x] Create `src/`, `models/`, `store/`, `srs/`, `ui/`, `utils/`
-  - [x] Add basic `src/index.js` CLI entry using `ink` `render`
-  - [x] Add simple config loader `utils/config.js` (base dir, defaults to `~/drill`)
+  - [x] Add basic `src/index.ts` CLI entry using Ink + TSX
+  - [x] Add simple config loader `utils/config.ts` (base dir, defaults to `~/drill`)
 
 - [x] Phase 1 – Core models
-  - [x] Implement `models/Card.js` with fields from doc
+  - [x] Implement `models/Card.ts` with fields from doc
   - [x] Add constructor + static `fromParsedMarkdown(...)`
   - [x] Add `serialize()` on Card delegating to writer util
-  - [x] Implement `models/Deck.js` with counts + helper methods
+  - [x] Implement `models/Deck.ts` with counts + helper methods
   - [x] Implement `Deck.getDueCards()`, `getNewCards()`, `getStats()`
 
-- [ ] Phase 2 – Markdown parsing/writing
-  - [ ] Implement `store/parser.js` with `parseMarkdownCard(filePath, content)`
-  - [ ] Split frontmatter, parse YAML, extract title/Question/Answer via regex
-  - [ ] Compute `nextReview` via `calculateNextReview(frontmatter)` helper
-  - [ ] Implement `store/writer.js` with `serializeCard(card)`
-  - [ ] Build frontmatter and markdown body per spec
-  - [ ] Implement `utils/dates.js` (`formatDate`, `startOfToday`, `addDays`, `isDue`)
+- [x] Phase 2 – Markdown parsing/writing
+  - [x] Implement `store/parser.ts` with `parseMarkdownCard(filePath, content)`
+  - [x] Split frontmatter, parse YAML, extract title/Question/Answer via regex
+  - [x] Compute `nextReview` via `calculateNextReview(frontmatter)` helper
+  - [x] Implement `store/writer.ts` with `serializeCard(card)`
+  - [x] Build frontmatter and markdown body per spec
+  - [x] Implement `utils/dates.ts` (`formatDate`, `startOfToday`, `addDays`, `isDue`)
 
 - [ ] Phase 3 – CardStore + filesystem
   - [ ] Implement `store/CardStore.js` ctor `(baseDir)` and `this.decks = new Map()`
@@ -40,14 +40,14 @@
   - [ ] Implement `calculateNextReview(frontmatter)` helper
 
 - [ ] Phase 5 – Ink UI: foundation
-  - [ ] Implement `ui/App.js` with `screen` state and `store` state
+  - [ ] Implement `ui/App.tsx` with `screen` state and `store` state
   - [ ] On mount, create `CardStore(config.baseDir)` and `await loadDecks()`
   - [ ] Render `MainMenu`, `StudyScreen`, `BrowseDecks`, `StatsScreen` via switch
-  - [ ] Implement `ui/MainMenu.js` with counts and menu options
-  - [ ] Wire `src/index.js` to parse CLI args and render `App`
+  - [ ] Implement `ui/MainMenu.tsx` with counts and menu options
+  - [ ] Wire `src/index.ts` to parse CLI args and render `App`
 
 - [ ] Phase 6 – Ink UI: Study flow
-  - [ ] Implement `ui/StudyScreen.js` with `currentCard`, `showAnswer`, `dueCards`
+  - [ ] Implement `ui/StudyScreen.tsx` with `currentCard`, `showAnswer`, `dueCards`
   - [ ] On mount, load due cards via `store.getDueCards(deckName)`
   - [ ] Implement `loadNextCard()` to advance through due cards
   - [ ] Implement `useInput` handling: SPACE, `1–5`, `q`
@@ -56,9 +56,9 @@
   - [ ] Handle empty state when no due cards
 
 - [ ] Phase 7 – Ink UI: Browse + Stats
-  - [ ] Implement `ui/BrowseDecks.js` listing decks with `ink-select-input`
+  - [ ] Implement `ui/BrowseDecks.tsx` listing decks with `ink-select-input`
   - [ ] Implement deck detail view with per-deck stats and “Study deck” action
-  - [ ] Implement `ui/StatsScreen.js` with global stats summary
+  - [ ] Implement `ui/StatsScreen.tsx` with global stats summary
   - [ ] Optionally add simple forecast of future due counts
 
 - [ ] Phase 8 – Config, error handling, performance
