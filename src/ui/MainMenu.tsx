@@ -34,10 +34,16 @@ const MainMenu: React.FC<MainMenuProps> = ({store, onNavigate}) => {
 
   return (
     <Box flexDirection="column" padding={1}>
-      <Box marginBottom={1}>
-        <Text bold color="cyan">
-          drill - Spaced Repetition System
-        </Text>
+      <Box marginBottom={1} flexDirection="column">
+        <Text color="cyan">$$$$$$$\  $$$$$$$\  $$$$$$\ $$\       $$\       </Text>
+        <Text color="cyan">$$  __$$\ $$  __$$\ \_$$  _|$$ |      $$ |      </Text>
+        <Text color="cyan">$$ |  $$ |$$ |  $$ |  $$ |  $$ |      $$ |      </Text>
+        <Text color="cyan">$$ |  $$ |$$$$$$$  |  $$ |  $$ |      $$ |      </Text>
+        <Text color="cyan">$$ |  $$ |$$  __$$&lt;   $$ |  $$ |      $$ |      </Text>
+        <Text color="cyan">$$ |  $$ |$$ |  $$ |  $$ |  $$ |      $$ |      </Text>
+        <Text color="cyan">$$$$$$$  |$$ |  $$ |$$$$$$\ $$$$$$$$\ $$$$$$$$\ </Text>
+        <Text color="cyan">\_______/ \__|  \__|\______|\________|\________|</Text>
+        <Text dimColor>Spaced Repetition System</Text>
       </Box>
 
       <Box marginBottom={1} flexDirection="column">
