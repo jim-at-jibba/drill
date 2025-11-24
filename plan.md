@@ -56,10 +56,10 @@
   - [x] Render question, conditional answer, and rating prompt
   - [x] Handle empty state when no due cards
 
-- [ ] Phase 7 – Ink UI: Browse + Stats
-  - [ ] Implement `ui/BrowseDecks.tsx` listing decks with `ink-select-input`
-  - [ ] Implement deck detail view with per-deck stats and “Study deck” action
-  - [ ] Implement `ui/StatsScreen.tsx` with global stats summary
+- [x] Phase 7 – Ink UI: Browse + Stats
+  - [x] Implement `ui/BrowseDecks.tsx` listing decks with `ink-select-input`
+  - [x] Implement deck detail view with per-deck stats and "Study deck" action
+  - [x] Implement `ui/StatsScreen.tsx` with global stats summary
   - [ ] Optionally add simple forecast of future due counts
 
 - [ ] Phase 8 – Config, error handling, performance

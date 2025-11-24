@@ -5,14 +5,18 @@ import {resolveBaseDir} from "../utils/config.js";
 import {CardStore} from "../store/CardStore.js";
 import MainMenu from "./MainMenu.js";
 import {StudyScreen} from "./StudyScreen.js";
+import {BrowseDecks} from "./BrowseDecks.js";
+import {StatsScreen} from "./StatsScreen.js";
 
 type Screen = "main-menu" | "study" | "browse" | "stats";
+type StudyMode = "all" | string; // "all" or deckName
 
 const App: React.FC = () => {
   const [screen, setScreen] = useState<Screen>("main-menu");
   const [store, setStore] = useState<CardStore | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [studyDeckName, setStudyDeckName] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const loadStore = async () => {
@@ -49,15 +53,31 @@ const App: React.FC = () => {
     );
   }
 
+  const handleStudyDeck = (deckName: string) => {
+    setStudyDeckName(deckName);
+    setScreen("study");
+  };
+
+  const handleExitStudy = () => {
+    setStudyDeckName(undefined);
+    setScreen("main-menu");
+  };
+
   switch (screen) {
     case "main-menu":
       return <MainMenu store={store} onNavigate={setScreen} />;
     case "study":
-      return <StudyScreen store={store} onExit={() => setScreen("main-menu")} />;
+      return <StudyScreen store={store} deckName={studyDeckName} onExit={handleExitStudy} />;
     case "browse":
-      return <Text>Browse Decks Screen (TODO)</Text>;
+      return (
+        <BrowseDecks
+          store={store}
+          onStudyDeck={handleStudyDeck}
+          onExit={() => setScreen("main-menu")}
+        />
+      );
     case "stats":
-      return <Text>Stats Screen (TODO)</Text>;
+      return <StatsScreen store={store} onExit={() => setScreen("main-menu")} />;
     default:
       return <Text>Unknown screen</Text>;
   }
