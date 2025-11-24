@@ -1,10 +1,10 @@
 # drill implementation plan
 
-- [ ] Phase 0 – Repo + scaffolding
-  - [ ] Init npm project, add deps (Ink v5, React, yaml, etc.)
-  - [ ] Create `src/`, `models/`, `store/`, `srs/`, `ui/`, `utils/`
-  - [ ] Add basic `src/index.js` CLI entry using `ink` `render`
-  - [ ] Add simple config loader `utils/config.js` (base dir, defaults to `~/drill`)
+- [x] Phase 0 – Repo + scaffolding
+  - [x] Init npm project, add deps (Ink v5, React, yaml, etc.)
+  - [x] Create `src/`, `models/`, `store/`, `srs/`, `ui/`, `utils/`
+  - [x] Add basic `src/index.js` CLI entry using `ink` `render`
+  - [x] Add simple config loader `utils/config.js` (base dir, defaults to `~/drill`)
 
 - [ ] Phase 1 – Core models
   - [ ] Implement `models/Card.js` with fields from doc
