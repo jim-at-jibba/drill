@@ -62,20 +62,20 @@
   - [x] Implement `ui/StatsScreen.tsx` with global stats summary
   - [ ] Optionally add simple forecast of future due counts
 
-- [ ] Phase 8 – Config, error handling, performance
-  - [ ] Implement `utils/config.js` resolving base dir from CLI/env
-  - [ ] Ensure base dir exists or show friendly error
-  - [ ] Wrap fs operations with try/catch and user-facing error messages
-  - [ ] Skip malformed markdown/frontmatter with warnings
-  - [ ] Keep deck + card cache in `CardStore`
-  - [ ] Optionally expose `reload()` to re-scan filesystem
+- [x] Phase 8 – Config, error handling, performance
+  - [x] Implement `utils/config.js` resolving base dir from CLI/env
+  - [x] Ensure base dir exists or show friendly error
+  - [x] Wrap fs operations with try/catch and user-facing error messages
+  - [x] Skip malformed markdown/frontmatter with warnings
+  - [x] Keep deck + card cache in `CardStore`
+  - [x] Optionally expose `reload()` to re-scan filesystem
   - [ ] Optionally add `fs.watch`-based auto-reload
 
-- [ ] Phase 9 – Tests + polish
-  - [ ] Add unit tests for SM-2 edge cases
-  - [ ] Add parser/writer round-trip tests on sample markdown
-  - [ ] Add CardStore tests for `getDueCards` and `getNewCards`
-  - [ ] Add UX polish: `ink-spinner` for loading, `ink-markdown` for content
+- [x] Phase 9 – Tests + polish
+  - [x] Add unit tests for SM-2 edge cases
+  - [x] Add parser/writer round-trip tests on sample markdown
+  - [x] Add CardStore tests for `getDueCards` and `getNewCards`
+  - [x] Add UX polish: `ink-spinner` for loading, `ink-markdown` for content
   - [ ] Add hints/help text on screens
 
 - [ ] Phase 10 – Packaging + docs

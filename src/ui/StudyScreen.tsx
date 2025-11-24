@@ -13,7 +13,7 @@ interface StudyScreenProps {
 export const StudyScreen: React.FC<StudyScreenProps> = ({ store, deckName, onExit }) => {
   const [dueCards, setDueCards] = useState<Card[]>([]);
   const [currentCard, setCurrentCard] = useState<Card | null>(null);
-  const [showAnswer, setShowAnswer] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [reviewed, setReviewed] = useState(0);
 
   useEffect(() => {
@@ -25,10 +25,10 @@ export const StudyScreen: React.FC<StudyScreenProps> = ({ store, deckName, onExi
     const newCards = store.getNewCards(deckName);
     const cards = [...due, ...newCards];
     setDueCards(cards);
+    setCurrentIndex(0);
     
     if (cards.length > 0) {
       setCurrentCard(cards[0]);
-      setShowAnswer(false);
     } else {
       setCurrentCard(null);
     }
@@ -47,11 +47,20 @@ export const StudyScreen: React.FC<StudyScreenProps> = ({ store, deckName, onExi
       reviewInterval: result.interval,
       easeFactor: result.easeFactor,
       repetitionCount: result.repetitions,
+      difficulty: quality, // Store the rating (1-5) for statistics
     });
     
     await store.saveCard(updated);
     setReviewed(reviewed + 1);
-    loadNextCard();
+    
+    // Move to next card
+    const nextIndex = currentIndex + 1;
+    if (nextIndex < dueCards.length) {
+      setCurrentIndex(nextIndex);
+      setCurrentCard(dueCards[nextIndex]);
+    } else {
+      setCurrentCard(null);
+    }
   };
 
   useInput((input) => {
@@ -60,14 +69,14 @@ export const StudyScreen: React.FC<StudyScreenProps> = ({ store, deckName, onExi
       return;
     }
 
-    if (!currentCard) return;
-
-    if (input === ' ' && !showAnswer) {
-      setShowAnswer(true);
+    if (input === 'b') {
+      onExit();
       return;
     }
 
-    if (showAnswer && ['1', '2', '3', '4', '5'].includes(input)) {
+    if (!currentCard) return;
+
+    if (['1', '2', '3', '4', '5'].includes(input)) {
       handleRating(parseInt(input, 10));
     }
   });
@@ -88,37 +97,52 @@ export const StudyScreen: React.FC<StudyScreenProps> = ({ store, deckName, onExi
 
   return (
     <Box flexDirection="column" padding={1}>
+      {/* Header */}
       <Box marginBottom={1}>
-        <Text dimColor>
-          {deckName || 'All decks'} • Due: {dueCards.length} • Reviewed: {reviewed}
+        <Text bold>
+          Studying: <Text color="cyan">{deckName || 'All decks'}</Text>
+          {' '}Card <Text color="yellow">{currentIndex + 1}/{dueCards.length}</Text>
         </Text>
       </Box>
 
-      <Box borderStyle="round" borderColor="blue" padding={1} marginBottom={1}>
-        <Text bold>{currentCard.question}</Text>
+      {/* Blue separator bar */}
+      <Box borderStyle="round" borderColor="blue" paddingX={1}>
+        <Text> </Text>
       </Box>
 
-      {showAnswer && (
-        <>
-          <Box borderStyle="round" borderColor="green" padding={1} marginBottom={1}>
-            <Text>{currentCard.answer}</Text>
-          </Box>
+      {/* Question */}
+      <Box paddingY={1} paddingX={2}>
+        <Text color="blue">{currentCard.question}</Text>
+      </Box>
 
-          <Box flexDirection="column" marginBottom={1}>
-            <Text bold>Rate your recall:</Text>
-            <Text dimColor>1 - Blackout (no recall)</Text>
-            <Text dimColor>2 - Wrong (incorrect response)</Text>
-            <Text dimColor>3 - Hard (difficult recall)</Text>
-            <Text dimColor>4 - Good (correct with effort)</Text>
-            <Text dimColor>5 - Easy (perfect recall)</Text>
-          </Box>
-        </>
-      )}
+      {/* Answer */}
+      <Box paddingY={1} paddingX={2} marginBottom={1}>
+        <Text>{currentCard.answer}</Text>
+      </Box>
 
+      {/* Rating buttons */}
+      <Box marginBottom={1} gap={1}>
+        <Box borderStyle="round" borderColor="magenta" paddingX={1}>
+          <Text color="magenta">Blackout (1)</Text>
+        </Box>
+        <Box borderStyle="round" borderColor="red" paddingX={1}>
+          <Text color="red">Wrong (2)</Text>
+        </Box>
+        <Box borderStyle="round" borderColor="yellow" paddingX={1}>
+          <Text color="yellow">Hard (3)</Text>
+        </Box>
+        <Box borderStyle="round" borderColor="green" paddingX={1}>
+          <Text color="green">Good (4)</Text>
+        </Box>
+        <Box borderStyle="round" borderColor="cyan" paddingX={1}>
+          <Text color="cyan">Easy (5)</Text>
+        </Box>
+      </Box>
+
+      {/* Help footer */}
       <Box marginTop={1}>
         <Text dimColor>
-          {showAnswer ? 'Press 1-5 to rate • ' : 'Press SPACE to reveal answer • '}
-          Press 'q' to quit
+          1-5: Rate Card    b: Back to Decks    q: Quit
         </Text>
       </Box>
     </Box>

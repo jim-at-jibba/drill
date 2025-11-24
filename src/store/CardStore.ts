@@ -35,6 +35,10 @@ export class CardStore {
     }
   }
 
+  async reload(): Promise<void> {
+    await this.loadDecks();
+  }
+
   private async loadDeckFromPath(name: string, dirPath: string): Promise<Deck> {
     let files: fs.Dirent[];
     try {
@@ -147,6 +151,9 @@ export class CardStore {
     } else {
       deck.cards.push(card);
     }
+    
+    // Update deck lastStudied timestamp
+    deck.lastStudied = new Date();
   }
 
   getStats(deckName?: string): DeckStats {

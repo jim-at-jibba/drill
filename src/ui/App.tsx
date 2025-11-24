@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import {Box, Text} from "ink";
 import Spinner from "ink-spinner";
-import {resolveBaseDir} from "../utils/config.js";
+import {resolveBaseDir, ensureBaseDirExists} from "../utils/config.js";
 import {CardStore} from "../store/CardStore.js";
 import MainMenu from "./MainMenu.js";
 import {StudyScreen} from "./StudyScreen.js";
@@ -9,7 +9,6 @@ import {BrowseDecks} from "./BrowseDecks.js";
 import {StatsScreen} from "./StatsScreen.js";
 
 type Screen = "main-menu" | "study" | "browse" | "stats";
-type StudyMode = "all" | string; // "all" or deckName
 
 const App: React.FC = () => {
   const [screen, setScreen] = useState<Screen>("main-menu");
@@ -22,6 +21,7 @@ const App: React.FC = () => {
     const loadStore = async () => {
       try {
         const baseDir = resolveBaseDir();
+        ensureBaseDirExists(baseDir);
         const cardStore = new CardStore(baseDir);
         await cardStore.loadDecks();
         setStore(cardStore);

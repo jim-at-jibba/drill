@@ -4,6 +4,7 @@ export interface DeckInit {
   name?: string;
   path?: string;
   cards?: Card[];
+  lastStudied?: Date | null;
 }
 
 export interface DeckStats {
@@ -18,11 +19,13 @@ export class Deck {
   name?: string;
   path?: string;
   cards: Card[];
+  lastStudied: Date | null;
 
-  constructor({name, path, cards = []}: DeckInit = {}) {
+  constructor({name, path, cards = [], lastStudied = null}: DeckInit = {}) {
     this.name = name;
     this.path = path;
     this.cards = Array.isArray(cards) ? cards : [];
+    this.lastStudied = lastStudied;
   }
 
   get totalCards(): number {
