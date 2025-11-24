@@ -6,12 +6,12 @@
   - [x] Add basic `src/index.js` CLI entry using `ink` `render`
   - [x] Add simple config loader `utils/config.js` (base dir, defaults to `~/drill`)
 
-- [ ] Phase 1 – Core models
-  - [ ] Implement `models/Card.js` with fields from doc
-  - [ ] Add constructor + static `fromParsedMarkdown(...)`
-  - [ ] Add `serialize()` on Card delegating to writer util
-  - [ ] Implement `models/Deck.js` with counts + helper methods
-  - [ ] Implement `Deck.getDueCards()`, `getNewCards()`, `getStats()`
+- [x] Phase 1 – Core models
+  - [x] Implement `models/Card.js` with fields from doc
+  - [x] Add constructor + static `fromParsedMarkdown(...)`
+  - [x] Add `serialize()` on Card delegating to writer util
+  - [x] Implement `models/Deck.js` with counts + helper methods
+  - [x] Implement `Deck.getDueCards()`, `getNewCards()`, `getStats()`
 
 - [ ] Phase 2 – Markdown parsing/writing
   - [ ] Implement `store/parser.js` with `parseMarkdownCard(filePath, content)`
