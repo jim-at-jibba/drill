@@ -21,15 +21,16 @@
   - [x] Build frontmatter and markdown body per spec
   - [x] Implement `utils/dates.ts` (`formatDate`, `startOfToday`, `addDays`, `isDue`)
 
-- [ ] Phase 3 – CardStore + filesystem
-  - [ ] Implement `store/CardStore.js` ctor `(baseDir)` and `this.decks = new Map()`
-  - [ ] Implement `loadDecks()` walking dirs under baseDir, reading `.md` files
-  - [ ] For each file, `parseMarkdownCard`, attach `deckName`, push into deck
-  - [ ] After loading, compute per-deck counts (total, due, new, learning)
-  - [ ] Implement `getDueCards(deckName?)` using `startOfToday()` and sort by `nextReview`
-  - [ ] Implement `getNewCards(deckName?)` using `repetitionCount` and `lastReviewed`
-  - [ ] Implement `saveCard(card)` to write markdown and update cache
-  - [ ] Implement `getStats(deckName?)` for total/due/new/learning/mature/retention
+- [x] Phase 3 – CardStore + filesystem
+- [x] Implement `store/CardStore.ts` ctor `(baseDir)` and `this.decks = new Map()`
+- [x] Implement `loadDecks()` walking dirs under baseDir, reading `.md` files
+- [x] For each file, `parseMarkdownCard`, attach `deckName`, push into deck
+- [x] After loading, compute per-deck counts (total, due, new, learning)
+- [x] Implement `getDueCards(deckName?)` using `startOfToday()` and sort by `nextReview`
+- [x] Implement `getNewCards(deckName?)` using `repetitionCount` and `lastReviewed`
+- [x] Implement `saveCard(card)` to write markdown and update cache
+- [x] Implement `getStats(deckName?)` for total/due/new/learning/mature/retention
+
 
 - [ ] Phase 4 – SM-2 algorithm
   - [ ] Implement `srs/sm2.js` with `calculateSM2(card, quality1to5)`
