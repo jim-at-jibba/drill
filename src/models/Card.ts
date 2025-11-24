@@ -84,10 +84,9 @@ export class Card {
     return new Card(parsed);
   }
 
-  serialize(): string {
+  async serialize(): Promise<string> {
     // Lazy import to avoid circular deps
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const {serializeCard}: {serializeCard: (card: Card) => string} = require("../store/writer");
+    const {serializeCard}: {serializeCard: (card: Card) => string} = await import("../store/writer.js");
     return serializeCard(this);
   }
 }

@@ -124,7 +124,7 @@ export class CardStore {
     const dir = path.dirname(filePath);
     await fsp.mkdir(dir, {recursive: true});
 
-    const markdown = card.serialize();
+    const markdown = await card.serialize();
     await fsp.writeFile(filePath, markdown, "utf8");
 
     const deckName = card.deckName || path.basename(path.dirname(filePath));

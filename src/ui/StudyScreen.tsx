@@ -21,7 +21,9 @@ export const StudyScreen: React.FC<StudyScreenProps> = ({ store, deckName, onExi
   }, []);
 
   const loadNextCard = () => {
-    const cards = store.getDueCards(deckName);
+    const due = store.getDueCards(deckName);
+    const newCards = store.getNewCards(deckName);
+    const cards = [...due, ...newCards];
     setDueCards(cards);
     
     if (cards.length > 0) {

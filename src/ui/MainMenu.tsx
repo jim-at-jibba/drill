@@ -15,9 +15,10 @@ interface MenuItem {
 
 const MainMenu: React.FC<MainMenuProps> = ({store, onNavigate}) => {
   const stats = store.getStats();
+  const studyCount = stats.dueCards + stats.newCards;
 
   const items: MenuItem[] = [
-    {label: `Study (${stats.dueCards} due)`, value: "study"},
+    {label: `Study (${studyCount} cards)`, value: "study"},
     {label: "Browse Decks", value: "browse"},
     {label: "Statistics", value: "stats"},
     {label: "Quit", value: "quit"}
