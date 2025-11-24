@@ -1,5 +1,5 @@
-import {addDays} from "../utils/dates";
-import Card from "../models/Card";
+import {addDays} from "../utils/dates.js";
+import Card from "../models/Card.js";
 
 export const QUALITY_RATINGS: Record<number, string> = {
   1: "Blackout",

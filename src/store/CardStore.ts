@@ -1,9 +1,9 @@
 import fs from "fs";
 import path from "path";
-import Deck, {DeckStats} from "../models/Deck";
-import Card from "../models/Card";
-import {parseMarkdownCard} from "./parser";
-import {startOfToday, isDue} from "../utils/dates";
+import Deck, {DeckStats} from "../models/Deck.js";
+import Card from "../models/Card.js";
+import {parseMarkdownCard} from "./parser.js";
+import {startOfToday, isDue} from "../utils/dates.js";
 
 const fsp = fs.promises;
 

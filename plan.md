@@ -32,20 +32,20 @@
 - [x] Implement `getStats(deckName?)` for total/due/new/learning/mature/retention
 
 
-- [ ] Phase 4 – SM-2 algorithm
-  - [ ] Implement `srs/sm2.js` with `calculateSM2(card, quality1to5)`
-  - [ ] Validate quality, map 1–5 to 0–5 if needed
-  - [ ] Apply EF formula with min 1.3 and interval rules (0,1,6, then `round(prev * EF)`)
-  - [ ] Compute `nextReview` using `addDays`
-  - [ ] Export `QUALITY_RATINGS` table matching doc comments
-  - [ ] Implement `calculateNextReview(frontmatter)` helper
+- [x] Phase 4 – SM-2 algorithm
+  - [x] Implement `srs/sm2.js` with `calculateSM2(card, quality1to5)`
+  - [x] Validate quality, map 1–5 to 0–5 if needed
+  - [x] Apply EF formula with min 1.3 and interval rules (0,1,6, then `round(prev * EF)`)
+  - [x] Compute `nextReview` using `addDays`
+  - [x] Export `QUALITY_RATINGS` table matching doc comments
+  - [x] Implement `calculateNextReview(frontmatter)` helper
 
-- [ ] Phase 5 – Ink UI: foundation
-  - [ ] Implement `ui/App.tsx` with `screen` state and `store` state
-  - [ ] On mount, create `CardStore(config.baseDir)` and `await loadDecks()`
-  - [ ] Render `MainMenu`, `StudyScreen`, `BrowseDecks`, `StatsScreen` via switch
-  - [ ] Implement `ui/MainMenu.tsx` with counts and menu options
-  - [ ] Wire `src/index.ts` to parse CLI args and render `App`
+- [x] Phase 5 – Ink UI: foundation
+  - [x] Implement `ui/App.tsx` with `screen` state and `store` state
+  - [x] On mount, create `CardStore(config.baseDir)` and `await loadDecks()`
+  - [x] Render `MainMenu`, `StudyScreen`, `BrowseDecks`, `StatsScreen` via switch
+  - [x] Implement `ui/MainMenu.tsx` with counts and menu options
+  - [x] Wire `src/index.ts` to parse CLI args and render `App`
 
 - [ ] Phase 6 – Ink UI: Study flow
   - [ ] Implement `ui/StudyScreen.tsx` with `currentCard`, `showAnswer`, `dueCards`

@@ -1,7 +1,7 @@
 import path from "path";
 import matter from "gray-matter";
-import {calculateNextReview} from "../utils/dates";
-import {ParsedMarkdownCard} from "../models/Card";
+import {calculateNextReview} from "../utils/dates.js";
+import {ParsedMarkdownCard} from "../models/Card.js";
 
 export function parseMarkdownCard(filePath: string, content: string): ParsedMarkdownCard {
   const {data: frontmatter = {}, content: bodyContent = ""} = matter(content || "");

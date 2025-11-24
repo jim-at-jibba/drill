@@ -1,6 +1,6 @@
 import YAML from "yaml";
-import {formatDate} from "../utils/dates";
-import {Card} from "../models/Card";
+import {formatDate} from "../utils/dates.js";
+import {Card} from "../models/Card.js";
 
 export function serializeCard(card: Card): string {
   const frontmatter = {
