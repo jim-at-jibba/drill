@@ -3,6 +3,7 @@ import {Box, Text} from "ink";
 import Spinner from "ink-spinner";
 import {resolveBaseDir, ensureBaseDirExists} from "../utils/config.js";
 import {CardStore} from "../store/CardStore.js";
+import {logger} from "../utils/logger.js";
 import MainMenu from "./MainMenu.js";
 import {StudyScreen} from "./StudyScreen.js";
 import {BrowseDecks} from "./BrowseDecks.js";
@@ -21,12 +22,16 @@ const App: React.FC = () => {
     const loadStore = async () => {
       try {
         const baseDir = resolveBaseDir();
+        logger.info('Resolving base directory', { baseDir });
         ensureBaseDirExists(baseDir);
         const cardStore = new CardStore(baseDir);
         await cardStore.loadDecks();
         setStore(cardStore);
         setLoading(false);
       } catch (err) {
+        logger.error('Failed to initialize app', err as Error, {
+          function: 'App.loadStore'
+        });
         setError(err instanceof Error ? err.message : "Failed to load decks");
         setLoading(false);
       }

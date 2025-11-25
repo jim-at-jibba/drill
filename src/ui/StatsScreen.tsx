@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Box, Text, useInput } from 'ink';
 import { CardStore } from '../store/CardStore.js';
 
@@ -32,7 +32,7 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({ store, onExit }) => {
     if (input === '3') setCurrentTab('forecast');
   });
 
-  const getTodayStudied = (): number => {
+  const todayStudied = useMemo(() => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
@@ -49,18 +49,18 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({ store, onExit }) => {
       }
     }
     return count;
-  };
+  }, [store.decks]);
 
-  const getRetentionRate = (): number => {
+  const retentionRate = useMemo(() => {
     let totalReviews = 0;
     let successfulReviews = 0;
     
     for (const deck of store.decks.values()) {
       for (const card of deck.cards) {
-        if (card.lastReviewed && card.difficulty !== null) {
+        if (card.lastReviewed && card.lastRating !== null) {
           totalReviews++;
           // Consider rating >= 3 as successful
-          if (card.difficulty >= 3) {
+          if (card.lastRating >= 3) {
             successfulReviews++;
           }
         }
@@ -68,9 +68,10 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({ store, onExit }) => {
     }
     
     return totalReviews > 0 ? Math.round((successfulReviews / totalReviews) * 100) : 0;
-  };
+  }, [store.decks]);
 
-  const getStudyHistory = (days: number = 7) => {
+  const studyHistory = useMemo(() => {
+    const days = 7;
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
@@ -100,12 +101,10 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({ store, onExit }) => {
     }
     
     return history;
-  };
+  }, [store.decks]);
 
   const renderSummary = () => {
-    const todayStudied = getTodayStudied();
-    const retentionRate = getRetentionRate();
-    const history = getStudyHistory(7);
+    const history = studyHistory;
     const maxCount = Math.max(...history.map(h => h.count), 1);
 
     return (
@@ -159,7 +158,7 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({ store, onExit }) => {
     );
   };
 
-  const renderDeckReview = () => {
+  const deckReviewData = useMemo(() => {
     // Find most recently studied deck
     let mostRecentDeck = null;
     let mostRecentTime = 0;
@@ -175,7 +174,7 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({ store, onExit }) => {
     }
 
     if (!mostRecentDeck) {
-      return <Text dimColor>No decks studied yet</Text>;
+      return null;
     }
 
     const deckStats = mostRecentDeck.getStats();
@@ -193,14 +192,30 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({ store, onExit }) => {
         reviewDate.setHours(0, 0, 0, 0);
         if (reviewDate.getTime() === today.getTime()) {
           todayReviewCount++;
-          // difficulty field stores the rating directly (1-5)
-          const rating = card.difficulty !== null ? Math.max(1, Math.min(5, Math.round(card.difficulty))) : 3;
+          // lastRating field stores the rating directly (1-5)
+          const rating = card.lastRating !== null ? Math.max(1, Math.min(5, Math.round(card.lastRating))) : 3;
           ratingCounts[rating - 1]++;
         }
       }
     }
 
     const maxCount = Math.max(...ratingCounts, 1);
+
+    return {
+      deck: mostRecentDeck,
+      deckStats,
+      ratingCounts,
+      todayReviewCount,
+      maxCount
+    };
+  }, [store.decks]);
+
+  const renderDeckReview = () => {
+    if (!deckReviewData) {
+      return <Text dimColor>No decks studied yet</Text>;
+    }
+
+    const { deck: mostRecentDeck, deckStats, ratingCounts, todayReviewCount, maxCount } = deckReviewData;
 
     return (
       <Box flexDirection="column">
@@ -241,7 +256,7 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({ store, onExit }) => {
     );
   };
 
-  const renderForecast = () => {
+  const forecastData = useMemo(() => {
     // Calculate next 7 days of due cards
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -277,6 +292,12 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({ store, onExit }) => {
     }
     
     const maxTotal = Math.max(...forecast.map(f => f.newCards + f.reviewCards), 1);
+
+    return { forecast, maxTotal };
+  }, [store.decks]);
+
+  const renderForecast = () => {
+    const { forecast, maxTotal } = forecastData;
     const maxBarWidth = 30;
 
     return (

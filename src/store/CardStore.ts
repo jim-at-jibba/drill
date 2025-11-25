@@ -4,6 +4,8 @@ import Deck, {DeckStats} from "../models/Deck.js";
 import Card from "../models/Card.js";
 import {parseMarkdownCard} from "./parser.js";
 import {startOfToday, isDue} from "../utils/dates.js";
+import {logger} from "../utils/logger.js";
+import {validateDeckName, validateCardContent, ValidationError} from "../utils/validation.js";
 
 const fsp = fs.promises;
 
@@ -22,16 +24,31 @@ export class CardStore {
     let entries: fs.Dirent[];
     try {
       entries = await fsp.readdir(this.baseDir, {withFileTypes: true});
-    } catch {
+    } catch (err) {
+      logger.error('Failed to read base directory', err as Error, {
+        baseDir: this.baseDir,
+        function: 'CardStore.loadDecks'
+      });
       return;
     }
+
+    logger.info(`Loading decks from ${this.baseDir}`, { count: entries.length });
 
     for (const entry of entries) {
       if (!entry.isDirectory()) continue;
       const deckName = entry.name;
       const deckPath = path.join(this.baseDir, deckName);
-      const deck = await this.loadDeckFromPath(deckName, deckPath);
-      this.decks.set(deckName, deck);
+      try {
+        const deck = await this.loadDeckFromPath(deckName, deckPath);
+        this.decks.set(deckName, deck);
+      } catch (err) {
+        logger.error(`Failed to load deck: ${deckName}`, err as Error, {
+          deckName,
+          deckPath,
+          function: 'CardStore.loadDecks'
+        });
+        // Continue loading other decks
+      }
     }
   }
 
@@ -43,7 +60,12 @@ export class CardStore {
     let files: fs.Dirent[];
     try {
       files = await fsp.readdir(dirPath, {withFileTypes: true});
-    } catch {
+    } catch (err) {
+      logger.warn(`Failed to read deck directory: ${name}`, {
+        error: err instanceof Error ? err.message : 'Unknown error',
+        dirPath,
+        function: 'CardStore.loadDeckFromPath'
+      });
       return new Deck({name, path: dirPath, cards: []});
     }
 
@@ -57,7 +79,12 @@ export class CardStore {
       let content: string;
       try {
         content = await fsp.readFile(filePath, "utf8");
-      } catch {
+      } catch (err) {
+        logger.warn(`Failed to read card file: ${file.name}`, {
+          error: err instanceof Error ? err.message : 'Unknown error',
+          filePath,
+          function: 'CardStore.loadDeckFromPath'
+        });
         continue;
       }
 
@@ -67,6 +94,7 @@ export class CardStore {
       cards.push(card);
     }
 
+    logger.debug(`Loaded deck: ${name}`, { cardCount: cards.length, dirPath });
     return new Deck({name, path: dirPath, cards});
   }
 
@@ -106,6 +134,21 @@ export class CardStore {
   }
 
   async saveCard(card: Card): Promise<void> {
+    // Validate card content
+    try {
+      validateCardContent(card.question, 'Card question');
+      validateCardContent(card.answer, 'Card answer');
+    } catch (err) {
+      if (err instanceof ValidationError) {
+        logger.error('Card validation failed', err, {
+          function: 'CardStore.saveCard',
+          cardId: card.id
+        });
+        throw err;
+      }
+      throw err;
+    }
+
     let filePath = card.filePath;
 
     if (!filePath) {
@@ -113,6 +156,20 @@ export class CardStore {
       const title = card.title || card.id || "card";
       if (!deckName) {
         throw new Error("Card must have deckName when filePath is missing");
+      }
+
+      // Validate deck name
+      try {
+        validateDeckName(deckName);
+      } catch (err) {
+        if (err instanceof ValidationError) {
+          logger.error('Deck name validation failed', err, {
+            function: 'CardStore.saveCard',
+            deckName
+          });
+          throw err;
+        }
+        throw err;
       }
 
       const slug = title
@@ -123,6 +180,19 @@ export class CardStore {
       const deckDir = path.join(this.baseDir, deckName);
       filePath = path.join(deckDir, `${slug || "card"}.md`);
       card.filePath = filePath;
+    }
+
+    // Validate path is within baseDir (prevent path traversal)
+    const normalizedPath = path.resolve(filePath);
+    const normalizedBase = path.resolve(this.baseDir);
+    if (!normalizedPath.startsWith(normalizedBase + path.sep) && normalizedPath !== normalizedBase) {
+      logger.error('Path traversal attempt detected', undefined, {
+        filePath,
+        normalizedPath,
+        baseDir: this.baseDir,
+        function: 'CardStore.saveCard'
+      });
+      throw new Error("Invalid file path: outside base directory");
     }
 
     const dir = path.dirname(filePath);

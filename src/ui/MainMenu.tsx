@@ -39,7 +39,7 @@ const MainMenu: React.FC<MainMenuProps> = ({store, onNavigate}) => {
         <Text color="cyan">$$  __$$\ $$  __$$\ \_$$  _|$$ |      $$ |      </Text>
         <Text color="cyan">$$ |  $$ |$$ |  $$ |  $$ |  $$ |      $$ |      </Text>
         <Text color="cyan">$$ |  $$ |$$$$$$$  |  $$ |  $$ |      $$ |      </Text>
-        <Text color="cyan">$$ |  $$ |$$  __$$&lt;   $$ |  $$ |      $$ |      </Text>
+        <Text color="cyan">$$ |  $$ |$$  __$${'<'}   $$ |  $$ |      $$ |      </Text>
         <Text color="cyan">$$ |  $$ |$$ |  $$ |  $$ |  $$ |      $$ |      </Text>
         <Text color="cyan">$$$$$$$  |$$ |  $$ |$$$$$$\ $$$$$$$$\ $$$$$$$$\ </Text>
         <Text color="cyan">\_______/ \__|  \__|\______|\________|\________|</Text>

@@ -49,7 +49,7 @@ export const StudyScreen: React.FC<StudyScreenProps> = ({ store, deckName, onExi
       reviewInterval: result.interval,
       easeFactor: result.easeFactor,
       repetitionCount: result.repetitions,
-      difficulty: quality, // Store the rating (1-5) for statistics
+      lastRating: quality, // Store the rating (1-5) for statistics
     });
     
     await store.saveCard(updated);

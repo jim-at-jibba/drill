@@ -2,6 +2,7 @@ import path from "path";
 import matter from "gray-matter";
 import {calculateNextReview} from "../utils/dates.js";
 import {ParsedMarkdownCard} from "../models/Card.js";
+import {logger} from "../utils/logger.js";
 
 export function parseMarkdownCard(filePath: string, content: string): ParsedMarkdownCard {
   try {
@@ -24,12 +25,13 @@ export function parseMarkdownCard(filePath: string, content: string): ParsedMark
     const easeFactor = (frontmatter.easeFactor as number) || 2.5;
     const repetitionCount = (frontmatter.repetitionCount as number) || 0;
 
-    const difficultyValue = (frontmatter as any).difficulty;
-    const difficulty =
-      typeof difficultyValue === "number"
-        ? difficultyValue
-        : difficultyValue != null
-        ? parseInt(String(difficultyValue), 10)
+    // Support both lastRating (new) and difficulty (deprecated)
+    const lastRatingValue = (frontmatter as any).lastRating ?? (frontmatter as any).difficulty;
+    const lastRating =
+      typeof lastRatingValue === "number"
+        ? lastRatingValue
+        : lastRatingValue != null
+        ? parseInt(String(lastRatingValue), 10)
         : null;
 
     const nextReview = calculateNextReview(frontmatter as any) || null;
@@ -47,10 +49,15 @@ export function parseMarkdownCard(filePath: string, content: string): ParsedMark
       reviewInterval,
       easeFactor,
       repetitionCount,
-      difficulty
+      lastRating,
+      difficulty: lastRating  // backward compat
     };
   } catch (err) {
-    console.warn(`Warning: Failed to parse ${filePath}: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    logger.warn(`Failed to parse card: ${path.basename(filePath)}`, {
+      error: err instanceof Error ? err.message : 'Unknown error',
+      filePath,
+      function: 'parseMarkdownCard'
+    });
     // Return minimal valid card on parse error
     return {
       id: path.basename(filePath, ".md"),
@@ -65,6 +72,7 @@ export function parseMarkdownCard(filePath: string, content: string): ParsedMark
       reviewInterval: 0,
       easeFactor: 2.5,
       repetitionCount: 0,
+      lastRating: null,
       difficulty: null
     };
   }

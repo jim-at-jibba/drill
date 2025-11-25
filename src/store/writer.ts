@@ -10,7 +10,8 @@ export function serializeCard(card: Card): string {
     review_interval: card.reviewInterval || 0,
     easeFactor: card.easeFactor || 2.5,
     repetitionCount: card.repetitionCount || 0,
-    difficulty: card.difficulty != null ? card.difficulty : null
+    lastRating: card.lastRating != null ? card.lastRating : null,
+    difficulty: card.lastRating != null ? card.lastRating : null  // backward compat
   };
 
   const yaml = YAML.stringify(frontmatter);

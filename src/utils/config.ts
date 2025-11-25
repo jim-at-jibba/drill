@@ -36,3 +36,9 @@ export function ensureBaseDirExists(baseDir: string): void {
     throw new Error(`Base path is not a directory: ${baseDir}`);
   }
 }
+
+export function getLogLevel(): string {
+  return process.env.DRILL_LOG_LEVEL || 
+         process.env.LOG_LEVEL || 
+         'INFO';
+}

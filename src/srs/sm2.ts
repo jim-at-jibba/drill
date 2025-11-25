@@ -1,5 +1,6 @@
 import {addDays} from "../utils/dates.js";
 import Card from "../models/Card.js";
+import {validateQuality} from "../utils/validation.js";
 
 export const QUALITY_RATINGS: Record<number, string> = {
   1: "Blackout",
@@ -17,9 +18,8 @@ export interface SM2Result {
 }
 
 export function calculateSM2(card: Card, quality1to5: number): SM2Result {
-  if (quality1to5 < 1 || quality1to5 > 5) {
-    throw new Error("Quality must be between 1 and 5");
-  }
+  // Validate quality rating
+  validateQuality(quality1to5);
 
   const quality = quality1to5 === 1 ? 0 : quality1to5; // map 1->0, 2-5 stay 2-5
 

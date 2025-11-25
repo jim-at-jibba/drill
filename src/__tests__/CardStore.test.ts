@@ -268,4 +268,44 @@ Yes
       expect(store.decks.has('new-deck')).toBe(true);
     });
   });
+
+  describe('security', () => {
+    it('should prevent path traversal via deckName', async () => {
+      const maliciousCard = new Card({
+        title: 'test-card',
+        deckName: '../../../etc',
+        question: 'Malicious',
+        answer: 'Attack',
+      });
+
+      // Should reject with either validation error or path traversal error (defense in depth)
+      await expect(store.saveCard(maliciousCard)).rejects.toThrow(/Deck name cannot contain|Invalid file path: outside base directory/);
+    });
+
+    it('should prevent absolute path attacks', async () => {
+      const maliciousCard = new Card({
+        filePath: '/etc/passwd',
+        title: 'Test',
+        deckName: 'test-deck',
+        question: 'Malicious',
+        answer: 'Attack',
+      });
+
+      await expect(store.saveCard(maliciousCard)).rejects.toThrow('Invalid file path: outside base directory');
+    });
+
+    it('should allow valid paths within baseDir', async () => {
+      const deckDir = path.join(tempDir, 'valid-deck');
+      fs.mkdirSync(deckDir);
+
+      const validCard = new Card({
+        title: 'Valid Card',
+        deckName: 'valid-deck',
+        question: 'Question?',
+        answer: 'Answer!',
+      });
+
+      await expect(store.saveCard(validCard)).resolves.not.toThrow();
+    });
+  });
 });

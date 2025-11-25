@@ -12,7 +12,9 @@ export interface CardInit {
   reviewInterval?: number;
   easeFactor?: number;
   repetitionCount?: number;
+  /** @deprecated Use lastRating instead */
   difficulty?: number | null;
+  lastRating?: number | null;
 }
 
 export interface ParsedMarkdownCard extends CardInit {}
@@ -33,7 +35,9 @@ export class Card {
   reviewInterval: number;
   easeFactor: number;
   repetitionCount: number;
+  /** @deprecated Use lastRating instead */
   difficulty: number | null;
+  lastRating: number | null;
 
   constructor(init: CardInit = {}) {
     const {
@@ -50,7 +54,8 @@ export class Card {
       reviewInterval = 0,
       easeFactor = DEFAULT_EASE_FACTOR,
       repetitionCount = 0,
-      difficulty = null
+      difficulty = null,
+      lastRating = null
     } = init;
 
     this.id = id;
@@ -76,7 +81,10 @@ export class Card {
     this.reviewInterval = reviewInterval || 0;
     this.easeFactor = easeFactor || DEFAULT_EASE_FACTOR;
     this.repetitionCount = repetitionCount || 0;
-    this.difficulty = difficulty;
+    
+    // Support both lastRating (new) and difficulty (deprecated) for backward compatibility
+    this.lastRating = lastRating ?? difficulty ?? null;
+    this.difficulty = difficulty ?? lastRating ?? null;
   }
 
   static fromParsedMarkdown(parsed?: ParsedMarkdownCard): Card {
