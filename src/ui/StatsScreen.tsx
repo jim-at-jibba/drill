@@ -52,27 +52,61 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({ store, onExit }) => {
   };
 
   const getRetentionRate = (): number => {
-    let totalReviewed = 0;
-    let successful = 0;
+    let totalReviews = 0;
+    let successfulReviews = 0;
     
     for (const deck of store.decks.values()) {
       for (const card of deck.cards) {
-        if (card.repetitionCount > 0) {
-          totalReviewed++;
-          // Consider successful if repetitionCount >= 2 (passed at least twice)
-          if (card.repetitionCount >= 2) {
-            successful++;
+        if (card.lastReviewed && card.difficulty !== null) {
+          totalReviews++;
+          // Consider rating >= 3 as successful
+          if (card.difficulty >= 3) {
+            successfulReviews++;
           }
         }
       }
     }
     
-    return totalReviewed > 0 ? Math.round((successful / totalReviewed) * 100) : 0;
+    return totalReviews > 0 ? Math.round((successfulReviews / totalReviews) * 100) : 0;
+  };
+
+  const getStudyHistory = (days: number = 7) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const history: Array<{ date: Date; count: number }> = [];
+    
+    for (let i = days - 1; i >= 0; i--) {
+      const targetDate = new Date(today);
+      targetDate.setDate(today.getDate() - i);
+      targetDate.setHours(0, 0, 0, 0);
+      
+      let count = 0;
+      for (const deck of store.decks.values()) {
+        for (const card of deck.cards) {
+          if (card.lastReviewed) {
+            const reviewDate = new Date(card.lastReviewed);
+            reviewDate.setHours(0, 0, 0, 0);
+            if (reviewDate.getTime() === targetDate.getTime()) {
+              count++;
+            }
+          }
+        }
+      }
+      
+      if (count > 0) {
+        history.push({ date: targetDate, count });
+      }
+    }
+    
+    return history;
   };
 
   const renderSummary = () => {
     const todayStudied = getTodayStudied();
     const retentionRate = getRetentionRate();
+    const history = getStudyHistory(7);
+    const maxCount = Math.max(...history.map(h => h.count), 1);
 
     return (
       <>
@@ -99,16 +133,27 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({ store, onExit }) => {
           <Text bold>Cards Studied per Day</Text>
         </Box>
 
-        {todayStudied > 0 ? (
-          <Box>
-            <Text dimColor>Nov 24  </Text>
-            <Box borderStyle="round" borderColor="blue" width={todayStudied * 2 + 2} paddingX={1}>
-              <Text> </Text>
-            </Box>
-            <Text> {todayStudied}</Text>
+        {history.length > 0 ? (
+          <Box flexDirection="column">
+            {history.map((day, idx) => {
+              const barWidth = Math.round((day.count / maxCount) * 20);
+              const dateStr = day.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+              
+              return (
+                <Box key={idx}>
+                  <Box width={10}>
+                    <Text dimColor>{dateStr}</Text>
+                  </Box>
+                  <Box borderStyle="round" borderColor="blue" width={barWidth + 2} paddingX={1}>
+                    <Text> </Text>
+                  </Box>
+                  <Text> {day.count}</Text>
+                </Box>
+              );
+            })}
           </Box>
         ) : (
-          <Text dimColor>No cards studied today</Text>
+          <Text dimColor>No cards studied recently</Text>
         )}
       </>
     );
