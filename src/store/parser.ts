@@ -14,7 +14,7 @@ export function parseMarkdownCard(filePath: string, content: string): ParsedMark
     const questionMatch = bodyContent.match(/##\s+Question\s*\n([\s\S]*?)(?=^##\s+|\Z)/m);
     const question = questionMatch ? questionMatch[1].trim() : "";
 
-    const answerMatch = bodyContent.match(/##\s+Answer\s*\n([\s\S]*?)$/m);
+    const answerMatch = bodyContent.match(/##\s+Answer\s*\n([\s\S]*)$/m);
     const answer = answerMatch ? answerMatch[1].trim() : "";
 
     const created = frontmatter.created ? new Date(frontmatter.created as string) : new Date();

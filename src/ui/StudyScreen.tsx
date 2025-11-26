@@ -104,9 +104,9 @@ export const StudyScreen: React.FC<StudyScreenProps> = ({ store, deckName, onExi
   }
 
   return (
-    <Box flexDirection="column" padding={1}>
+    <Box flexDirection="column">
       {/* Header */}
-      <Box marginBottom={1}>
+      <Box>
         <Text bold>
           Studying: <Text color="cyan">{deckName || 'All decks'}</Text>
           {' '}Card <Text color="yellow">{currentIndex + 1}/{dueCards.length}</Text>
@@ -114,24 +114,26 @@ export const StudyScreen: React.FC<StudyScreenProps> = ({ store, deckName, onExi
       </Box>
 
       {/* Blue separator bar */}
-      <Box borderStyle="round" borderColor="blue" paddingX={1}>
+      <Box borderStyle="round" borderColor="blue" paddingX={1} marginY={1}>
         <Text> </Text>
       </Box>
 
       {/* Question */}
-      <Box paddingY={1} paddingX={2}>
+      <Box paddingX={2} paddingBottom={1}>
         <Text color="blue">{currentCard.question}</Text>
       </Box>
 
       {/* Answer or prompt */}
       {showAnswer ? (
         <>
-          <Box paddingY={1} paddingX={2} marginBottom={1}>
-            <Text>{currentCard.answer}</Text>
+          <Box paddingX={2} paddingBottom={1} flexDirection="column">
+            {currentCard.answer.split('\n').map((line, idx) => (
+              <Text key={idx}>{line || ' '}</Text>
+            ))}
           </Box>
 
           {/* Rating buttons */}
-          <Box marginBottom={1} gap={1}>
+          <Box gap={1} marginBottom={1}>
             <Box borderStyle="round" borderColor="magenta" paddingX={1}>
               <Text color="magenta">Blackout (1)</Text>
             </Box>
@@ -150,14 +152,14 @@ export const StudyScreen: React.FC<StudyScreenProps> = ({ store, deckName, onExi
           </Box>
 
           {/* Help footer */}
-          <Box marginTop={1}>
+          <Box>
             <Text dimColor>
               1-5: Rate Card    b: Back to Decks    q: Quit
             </Text>
           </Box>
         </>
       ) : (
-        <Box marginTop={1}>
+        <Box>
           <Text dimColor>
             Press SPACE to reveal answer    b: Back to Decks    q: Quit
           </Text>
