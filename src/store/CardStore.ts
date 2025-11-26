@@ -9,15 +9,27 @@ import {validateDeckName, validateCardContent, ValidationError} from "../utils/v
 
 const fsp = fs.promises;
 
+/**
+ * Manages flashcard decks and cards, providing storage and retrieval operations.
+ * Handles loading from filesystem, saving card progress, and querying due/new cards.
+ */
 export class CardStore {
   baseDir: string;
   decks: Map<string, Deck>;
 
+  /**
+   * @param baseDir - Root directory containing deck folders
+   */
   constructor(baseDir: string) {
     this.baseDir = baseDir;
     this.decks = new Map();
   }
 
+  /**
+   * Loads all decks from the base directory. Each subdirectory becomes a deck,
+   * with .md files parsed as cards. Errors loading individual decks are logged but don't halt loading.
+   * @throws Never throws - errors are logged and loading continues
+   */
   async loadDecks(): Promise<void> {
     this.decks.clear();
 
@@ -52,6 +64,10 @@ export class CardStore {
     }
   }
 
+  /**
+   * Reloads all decks from filesystem, discarding in-memory state.
+   * Use when deck files change externally.
+   */
   async reload(): Promise<void> {
     await this.loadDecks();
   }
@@ -106,6 +122,11 @@ export class CardStore {
     return result;
   }
 
+  /**
+   * Returns cards due for review today, sorted by next review date (earliest first).
+   * @param deckName - Specific deck to query, or all decks if omitted
+   * @returns Array of due cards sorted by nextReview timestamp
+   */
   getDueCards(deckName?: string): Card[] {
     const today = startOfToday();
     const sourceCards = deckName
@@ -122,6 +143,11 @@ export class CardStore {
     });
   }
 
+  /**
+   * Returns cards never studied (repetitionCount = 0 and no lastReviewed date).
+   * @param deckName - Specific deck to query, or all decks if omitted
+   * @returns Array of new/unstudied cards
+   */
   getNewCards(deckName?: string): Card[] {
     const sourceCards = deckName
       ? this.decks.get(deckName)?.cards || []
@@ -133,6 +159,13 @@ export class CardStore {
     });
   }
 
+  /**
+   * Persists card to filesystem and updates in-memory deck.
+   * Auto-generates filePath from deckName/title if missing. Creates deck directory if needed.
+   * @param card - Card to save (must have deckName if filePath is missing)
+   * @throws {ValidationError} Card content or deck name invalid
+   * @throws {Error} Missing deckName when filePath absent, or path traversal attempt
+   */
   async saveCard(card: Card): Promise<void> {
     // Validate card content
     try {
@@ -155,7 +188,10 @@ export class CardStore {
       const deckName = card.deckName;
       const title = card.title || card.id || "card";
       if (!deckName) {
-        throw new Error("Card must have deckName when filePath is missing");
+        const cardIdentifier = card.id || card.title || 'untitled';
+        throw new Error(
+          `Card must have deckName when filePath is missing (card: ${cardIdentifier})`
+        );
       }
 
       // Validate deck name
@@ -226,6 +262,11 @@ export class CardStore {
     deck.lastStudied = new Date();
   }
 
+  /**
+   * Calculates statistics for deck(s): total, due, new, learning, mature card counts.
+   * @param deckName - Specific deck to query, or aggregated stats for all decks if omitted
+   * @returns Statistics object with card counts by category
+   */
   getStats(deckName?: string): DeckStats {
     if (deckName) {
       const deck = this.decks.get(deckName);

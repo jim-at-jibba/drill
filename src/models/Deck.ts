@@ -7,14 +7,25 @@ export interface DeckInit {
   lastStudied?: Date | null;
 }
 
+/**
+ * Statistics summary for a deck's cards.
+ */
 export interface DeckStats {
+  /** Total cards in deck */
   totalCards: number;
+  /** Cards due for review today */
   dueCards: number;
+  /** Cards never studied (rep=0, no lastReviewed) */
   newCards: number;
+  /** Cards with 1-2 successful reviews */
   learningCards: number;
+  /** Cards with 3+ successful reviews */
   matureCards: number;
 }
 
+/**
+ * Collection of flashcards with metadata and filtering methods.
+ */
 export class Deck {
   name?: string;
   path?: string;
@@ -70,6 +81,10 @@ export class Deck {
     });
   }
 
+  /**
+   * Calculates statistics for this deck (total, due, new, learning, mature).
+   * @returns Statistics object with card counts by category
+   */
   getStats(): DeckStats {
     const totalCards = this.totalCards;
     const dueCards = this.getDueCards().length;

@@ -1,16 +1,30 @@
 /**
- * Input validation utilities
+ * Input validation utilities for flashcard data.
  */
 
+/**
+ * Custom error for validation failures. Includes optional context for debugging.
+ */
 export class ValidationError extends Error {
-  constructor(message: string) {
+  public context?: Record<string, any>;
+  
+  /**
+   * @param message - Human-readable error description
+   * @param context - Additional data about validation failure (field values, constraints, etc.)
+   */
+  constructor(message: string, context?: Record<string, any>) {
     super(message);
     this.name = 'ValidationError';
+    this.context = context;
   }
 }
 
 /**
- * Validates that a string is not empty or only whitespace
+ * Validates that a string is not empty or only whitespace.
+ * @param value - String to validate
+ * @param fieldName - Field name for error messages
+ * @returns Trimmed string
+ * @throws {ValidationError} Value is empty or whitespace-only
  */
 export function validateNonEmpty(value: string, fieldName: string): string {
   const trimmed = value.trim();
@@ -21,11 +35,11 @@ export function validateNonEmpty(value: string, fieldName: string): string {
 }
 
 /**
- * Validates deck name:
- * - Non-empty
- * - No path separators (/, \)
- * - No path traversal attempts (..)
- * - Max 255 chars (filesystem limit)
+ * Validates deck name for safe filesystem use.
+ * Rules: non-empty, no path separators (/, \), no "..", max 255 chars.
+ * @param name - Deck name to validate
+ * @returns Trimmed deck name
+ * @throws {ValidationError} Name violates safety/length constraints
  */
 export function validateDeckName(name: string): string {
   const trimmed = validateNonEmpty(name, 'Deck name');
@@ -46,9 +60,11 @@ export function validateDeckName(name: string): string {
 }
 
 /**
- * Validates card front/back content:
- * - Non-empty
- * - Max length to prevent memory issues
+ * Validates card question/answer content (non-empty, max 10KB).
+ * @param content - Card content to validate
+ * @param fieldName - Field name for error messages ('Card question', 'Card answer', etc.)
+ * @returns Trimmed content
+ * @throws {ValidationError} Content is empty or exceeds 10000 characters
  */
 export function validateCardContent(content: string, fieldName: string): string {
   const trimmed = validateNonEmpty(content, fieldName);
@@ -62,7 +78,10 @@ export function validateCardContent(content: string, fieldName: string): string 
 }
 
 /**
- * Validates SM-2 quality rating (1-5)
+ * Validates SM-2 quality rating (1=Blackout, 2=Wrong, 3=Hard, 4=Good, 5=Easy).
+ * @param quality - User rating to validate
+ * @returns Validated quality rating
+ * @throws {ValidationError} Not a finite integer between 1-5
  */
 export function validateQuality(quality: number): number {
   if (!Number.isFinite(quality)) {
@@ -81,7 +100,11 @@ export function validateQuality(quality: number): number {
 }
 
 /**
- * Validates date is valid and not too far in past/future
+ * Validates date is valid and within reasonable range (2000 to 100 years from now).
+ * @param date - Date to validate
+ * @param fieldName - Field name for error messages
+ * @returns Validated date
+ * @throws {ValidationError} Date is invalid or outside acceptable range
  */
 export function validateDate(date: Date, fieldName: string): Date {
   if (!(date instanceof Date) || isNaN(date.getTime())) {
@@ -101,7 +124,10 @@ export function validateDate(date: Date, fieldName: string): Date {
 }
 
 /**
- * Validates interval (days between reviews)
+ * Validates review interval (1 to 3650 days / 10 years).
+ * @param interval - Days between reviews
+ * @returns Validated interval
+ * @throws {ValidationError} Not finite or outside 1-3650 range
  */
 export function validateInterval(interval: number): number {
   if (!Number.isFinite(interval)) {
@@ -121,7 +147,10 @@ export function validateInterval(interval: number): number {
 }
 
 /**
- * Validates easiness factor (SM-2 algorithm)
+ * Validates SM-2 easiness factor (minimum 1.3 per algorithm spec).
+ * @param ef - Easiness factor to validate
+ * @returns Validated easiness factor
+ * @throws {ValidationError} Not finite or below 1.3
  */
 export function validateEasinessFactor(ef: number): number {
   if (!Number.isFinite(ef)) {
@@ -136,7 +165,10 @@ export function validateEasinessFactor(ef: number): number {
 }
 
 /**
- * Validates repetition count
+ * Validates repetition count (non-negative integer).
+ * @param count - Repetition count to validate
+ * @returns Validated count
+ * @throws {ValidationError} Not a finite non-negative integer
  */
 export function validateRepetitionCount(count: number): number {
   if (!Number.isFinite(count)) {
