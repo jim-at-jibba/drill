@@ -74,6 +74,15 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ children }) 
       return;
     }
 
+    // Check for headings (# to ######)
+    const headingMatch = line.match(/^(#{1,6})\s+(.+)$/);
+    if (headingMatch) {
+      const level = headingMatch[1].length;
+      const text = headingMatch[2];
+      elements.push(renderHeading(text, level, idx));
+      return;
+    }
+
     // Render line with inline markdown
     elements.push(renderInlineMarkdown(line, idx));
   });
@@ -84,6 +93,57 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ children }) 
     </Box>
   );
 };
+
+/**
+ * Renders a heading with appropriate styling based on level
+ */
+function renderHeading(text: string, level: number, key: number): React.ReactNode {
+  // Apply styling based on heading level
+  switch (level) {
+    case 1:
+      return (
+        <Text key={key} bold color="magenta" underline>
+          {text}
+        </Text>
+      );
+    case 2:
+      return (
+        <Text key={key} bold color="cyan">
+          {text}
+        </Text>
+      );
+    case 3:
+      return (
+        <Text key={key} bold color="yellow">
+          {text}
+        </Text>
+      );
+    case 4:
+      return (
+        <Text key={key} bold color="green">
+          {text}
+        </Text>
+      );
+    case 5:
+      return (
+        <Text key={key} bold>
+          {text}
+        </Text>
+      );
+    case 6:
+      return (
+        <Text key={key} dimColor bold>
+          {text}
+        </Text>
+      );
+    default:
+      return (
+        <Text key={key} bold>
+          {text}
+        </Text>
+      );
+  }
+}
 
 /**
  * Renders a line with inline markdown (bold, code, etc.)
