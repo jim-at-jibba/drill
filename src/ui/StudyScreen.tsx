@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Text, useInput } from 'ink';
+import { MarkdownRenderer } from './MarkdownRenderer.js';
 import { Card } from '../models/Card.js';
 import { CardStore } from '../store/CardStore.js';
 import { calculateSM2 } from '../srs/sm2.js';
@@ -126,10 +127,8 @@ export const StudyScreen: React.FC<StudyScreenProps> = ({ store, deckName, onExi
       {/* Answer or prompt */}
       {showAnswer ? (
         <>
-          <Box paddingX={2} paddingBottom={1} flexDirection="column">
-            {currentCard.answer.split('\n').map((line, idx) => (
-              <Text key={idx}>{line || ' '}</Text>
-            ))}
+          <Box paddingX={2} paddingBottom={1}>
+            <MarkdownRenderer>{currentCard.answer}</MarkdownRenderer>
           </Box>
 
           {/* Rating buttons */}
