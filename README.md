@@ -298,6 +298,21 @@ Three ways to set card location:
 2. **Environment variable**: `export DRILL_DIR=/path/to/cards`
 3. **Default**: `~/drill`
 
+### Logging
+
+By default, Drill only shows warnings and errors. Enable verbose logging:
+
+```bash
+# Show informational messages (loading decks, etc.)
+LOG_LEVEL=INFO drill
+
+# Show debug messages (detailed operations)
+LOG_LEVEL=DEBUG drill
+
+# Back to quiet mode (default)
+LOG_LEVEL=WARN drill
+```
+
 ### Creating New Cards
 
 1. Create `.md` file in deck directory

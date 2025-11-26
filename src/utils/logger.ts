@@ -19,10 +19,10 @@ interface LogContext {
 
 /**
  * Simple structured logger writing to stderr with ISO timestamps and JSON context.
- * Respects LOG_LEVEL env var (DEBUG|INFO|WARN|ERROR, default INFO).
+ * Respects LOG_LEVEL env var (DEBUG|INFO|WARN|ERROR, default WARN).
  */
 class Logger {
-  private level: LogLevel = LogLevel.INFO;
+  private level: LogLevel = LogLevel.WARN;
 
   /**
    * Sets minimum log level. Messages below this level are silenced.
