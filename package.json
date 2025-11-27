@@ -1,18 +1,23 @@
 {
-  "name": "drill",
-  "version": "1.0.0",
+  "name": "drill-srs",
+  "version": "0.1.0",
   "type": "module",
   "main": "dist/index.js",
+  "bin": {
+    "drill": "./dist/index.js"
+  },
   "scripts": {
     "build": "tsc",
     "start": "ts-node src/index.ts",
+    "dev": "ts-node src/index.ts",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run build"
   },
-  "keywords": [],
+  "keywords": ["flashcards", "spaced-repetition", "srs", "cli", "terminal", "learning", "memorization", "markdown"],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "Lightweight file-based spaced repetition system using Markdown flashcards",
   "dependencies": {
     "cli-highlight": "^2.1.11",
     "date-fns": "^4.1.0",

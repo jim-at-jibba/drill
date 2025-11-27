@@ -16,13 +16,24 @@ Drill helps you memorize anything using [spaced repetition](https://en.wikipedia
 
 ## Installation
 
+### Install globally via npm
+
 ```bash
+npm install -g drill-srs
+drill
+```
+
+### Or clone and run locally
+
+```bash
+git clone https://github.com/yourusername/drill.git
+cd drill
 npm install
 npm run build
 npm start
 ```
 
-Or for development:
+For development:
 ```bash
 npm run start
 ```

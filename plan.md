@@ -78,8 +78,8 @@
   - [x] Add UX polish: `ink-spinner` for loading, `ink-markdown` for content
   - [ ] Add hints/help text on screens
 
-- [ ] Phase 10 – Packaging + docs
-  - [ ] Fill `package.json` (`bin`, scripts)
-  - [ ] Add `README.md` explaining install, config, usage, format
-  - [ ] Ensure CLI shebang and executability
-  - [ ] Document optional `npm publish` steps
+- [x] Phase 10 – Packaging + docs
+  - [x] Fill `package.json` (`bin`, scripts)
+  - [x] Add `README.md` explaining install, config, usage, format
+  - [x] Ensure CLI shebang and executability
+  - [x] Document optional `npm publish` steps
