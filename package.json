@@ -14,13 +14,31 @@
     "test:watch": "vitest",
     "prepublishOnly": "npm run build"
   },
-  "keywords": ["flashcards", "spaced-repetition", "srs", "cli", "terminal", "learning", "memorization", "markdown"],
+  "keywords": [
+    "flashcards",
+    "spaced-repetition",
+    "srs",
+    "cli",
+    "terminal",
+    "learning",
+    "memorization",
+    "markdown"
+  ],
   "author": "",
   "license": "ISC",
   "description": "Lightweight file-based spaced repetition system using Markdown flashcards",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jim-at-jibba/drill.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jim-at-jibba/drill/issues"
+  },
+  "homepage": "https://github.com/jim-at-jibba/drill#readme",
   "dependencies": {
     "cli-highlight": "^2.1.11",
     "date-fns": "^4.1.0",
+    "drill-srs": "^0.1.0",
     "glob": "^13.0.0",
     "gray-matter": "^4.0.3",
     "ink": "^5.2.1",
