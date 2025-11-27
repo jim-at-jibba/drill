@@ -1,10 +1,10 @@
 {
   "name": "drill-srs",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "drill": "./dist/index.js"
+    "drill": "dist/index.js"
   },
   "scripts": {
     "build": "tsc",
