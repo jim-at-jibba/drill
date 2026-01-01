@@ -4,6 +4,9 @@ import { MarkdownRenderer } from './MarkdownRenderer.js';
 import { Card } from '../models/Card.js';
 import { CardStore } from '../store/CardStore.js';
 import { calculateSM2 } from '../srs/sm2.js';
+import { getAutoCommit } from '../utils/config.js';
+import { isGitRepository, stageCommitAndPush } from '../utils/git.js';
+import { logger } from '../utils/logger.js';
 
 interface StudyScreenProps {
   store: CardStore;
@@ -17,10 +20,36 @@ export const StudyScreen: React.FC<StudyScreenProps> = ({ store, deckName, onExi
   const [currentIndex, setCurrentIndex] = useState(0);
   const [reviewed, setReviewed] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
+  const [hasChanges, setHasChanges] = useState(false);
+  const [isGitRepo, setIsGitRepo] = useState(false);
+  const [autoCommitEnabled, setAutoCommitEnabled] = useState(false);
 
   useEffect(() => {
     loadNextCard();
+    checkGitRepository();
+    setAutoCommitEnabled(getAutoCommit());
   }, []);
+
+  const checkGitRepository = async () => {
+    const isRepo = await isGitRepository(store.baseDir);
+    setIsGitRepo(isRepo);
+  };
+
+  const commitChanges = async (trigger: string) => {
+    if (!autoCommitEnabled || !isGitRepo) return;
+
+    try {
+      const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+      const message = `Auto-commit: ${reviewed} cards reviewed (${trigger})`;
+      await stageCommitAndPush(store.baseDir, message);
+      logger.info("Auto-committed changes", { reviewed, trigger });
+    } catch (err) {
+      logger.warn("Failed to auto-commit changes", {
+        error: err instanceof Error ? err.message : 'Unknown error',
+        trigger
+      });
+    }
+  };
 
   const loadNextCard = () => {
     const due = store.getDueCards(deckName);
@@ -55,6 +84,7 @@ export const StudyScreen: React.FC<StudyScreenProps> = ({ store, deckName, onExi
     
     await store.saveCard(updated);
     setReviewed(reviewed + 1);
+    setHasChanges(true);
     
     // Move to next card
     const nextIndex = currentIndex + 1;
@@ -64,17 +94,21 @@ export const StudyScreen: React.FC<StudyScreenProps> = ({ store, deckName, onExi
       setCurrentCard(dueCards[nextIndex]);
     } else {
       setCurrentCard(null);
+      // All cards reviewed, commit if auto-commit is enabled
+      if (hasChanges || reviewed + 1 > 0) {
+        await commitChanges('session complete');
+      }
     }
   };
 
   useInput((input) => {
     if (input === 'q') {
-      onExit();
+      commitChanges('manual exit').finally(() => onExit());
       return;
     }
 
     if (input === 'b') {
-      onExit();
+      commitChanges('back to decks').finally(() => onExit());
       return;
     }
 
@@ -112,6 +146,11 @@ export const StudyScreen: React.FC<StudyScreenProps> = ({ store, deckName, onExi
           Studying: <Text color="cyan">{deckName || 'All decks'}</Text>
           {' '}Card <Text color="yellow">{currentIndex + 1}/{dueCards.length}</Text>
         </Text>
+        {autoCommitEnabled && isGitRepo && (
+          <Box marginLeft={2}>
+            <Text color="green">[Auto-commit ON]</Text>
+          </Box>
+        )}
       </Box>
 
       {/* Blue separator bar */}

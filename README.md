@@ -13,6 +13,7 @@ Drill helps you memorize anything using [spaced repetition](https://en.wikipedia
 - **Terminal UI** - Fast keyboard-driven interface using Ink (React for terminals)
 - **Deck organization** - Organize cards into decks using directories
 - **Statistics** - Track learning progress, review forecasts, retention rates
+- **Git integration** - Optional auto-commit to track card progress over time
 
 ## Screenshots
 
@@ -341,6 +342,42 @@ Three ways to set card location:
 2. **Environment variable**: `export DRILL_DIR=/path/to/cards`
 3. **Default**: `~/drill`
 
+### Auto-Commit (Git Integration)
+
+Auto-commit card changes after each study session:
+
+```bash
+# Enable auto-commit
+DRILL_AUTO_COMMIT=true drill
+
+# Or combine with custom directory
+DRILL_AUTO_COMMIT=true DRILL_DIR=/path/to/cards drill
+```
+
+**How it works:**
+- Detects if card directory is a git repository
+- Stages and commits changes when you:
+  - Press **'B'** to exit back to decks
+  - Press **'Q'** to quit
+  - Complete all cards in a session
+- Commit message: `Auto-commit: {count} cards reviewed ({trigger})`
+- Disabled by default, requires opt-in via env var
+
+**Requirements:**
+- Card directory must be a git repository (`git init`)
+- Git must be configured with user name/email
+
+**Example:**
+```bash
+cd ~/drill
+git init
+git config user.email "you@example.com"
+git config user.name "Your Name"
+
+# Now auto-commit will work
+DRILL_AUTO_COMMIT=true drill
+```
+
 ### Logging
 
 By default, Drill only shows warnings and errors. Enable verbose logging:
@@ -363,13 +400,18 @@ LOG_LEVEL=WARN drill
 3. Add title, question, and answer sections
 4. Start studying - Drill will update metadata automatically
 
-**Tip:** Use Git to version control your flashcards!
+**Tip:** Use Git to version control your flashcards! See [Auto-Commit](#auto-commit-git-integration) to automatically commit card progress.
 
 ```bash
 cd ~/drill
 git init
+git config user.email "you@example.com"
+git config user.name "Your Name"
 git add .
 git commit -m "Add programming flashcards"
+
+# Enable auto-commit for automatic card tracking
+DRILL_AUTO_COMMIT=true drill
 ```
 
 ## Development

@@ -97,3 +97,12 @@ export function getLogLevel(): string {
          process.env.LOG_LEVEL || 
          'INFO';
 }
+
+/**
+ * Gets auto-commit setting from environment variables (DRILL_AUTO_COMMIT).
+ * @returns boolean indicating if auto-commit is enabled (defaults to false)
+ */
+export function getAutoCommit(): boolean {
+  const autoCommit = process.env.DRILL_AUTO_COMMIT;
+  return autoCommit === "true" || autoCommit === "1" || autoCommit === "yes";
+}
